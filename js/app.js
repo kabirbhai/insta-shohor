@@ -1,7 +1,7 @@
 let posts = [];
 
-const likedPostsId = [];
-const reportedPostsId = [];
+let likedPostsId = [];
+let reportedPostsId = [];
 
 const getLikedPosts = () => {
   return posts.filter((post) => likedPostsId.includes(post.id));
@@ -16,8 +16,8 @@ const isLiked = (id) => {
 };
 
 const addToLiked = (id) => {
-  likedPostsId.plus(id);
-  showPosts(likeId);
+  likedPostsId.push(id);
+  showPosts('liked');
 };
 
 const reportPost = (id) => {
@@ -34,23 +34,26 @@ const switchTab = (id) => {
   if (id === "posts") {
     document.getElementById("posts").style.display = "grid";
     document.getElementById("liked").style.display = "none";
-    document.getElementById("reported").style.display = "none";
+    document.getElementById("reported").style.display = "block";
   } else if (id === "liked") {
     document.getElementById("liked").style.display = "block";
     document.getElementById("posts").style.display = "none";
-    document.getElementById("reported").style.display = "none";
+    document.getElementById("reported").style.display = "block";
 
     displayLikedPosts();
   } else {
     document.getElementById("reported").style.display = "block";
     document.getElementById("posts").style.display = "none";
-    document.getElementById("liked").style.display = "none";
+    document.getElementById("liked").style.display = "block";
 
     displayReportedPosts();
   }
 };
 
 const createPost = (post) => {
+  console.log(post)
+  const comment = post.comments[0].text;
+  const userComment = post.comments[0].user;
   const image = post.image;
   const div = document.createElement("article");
   div.classList.add("post");
@@ -63,7 +66,7 @@ const createPost = (post) => {
                     class="post__avatar"
                   >
                     <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80" alt="User Picture" />
-                    // <img src="${image}" alt="User Picture" />
+                
                   </a>
                   <a href="#" class="post__user">phero</a>
                 </div>
@@ -86,7 +89,7 @@ const createPost = (post) => {
               <div class="post__footer">
                 <div class="post__buttons">
                   <button class="post__button" onclick="addToLiked(${post.id})">
-                  <i class="fa-solid fa-heart ${isLiked(post.id) && "text-danger"}"></i>
+                  <i class="fa-solid fa-heart ${isLiked(post.id) && 'text-danger'}"></i>
                     
                   </button>
                   <button class="post__button">
@@ -120,9 +123,9 @@ const createPost = (post) => {
                   <div class="post__description">
                     <small>
                       <a class="post__name--underline" href="#">
-                          ${post.comments?.user}
+                          ${userComment}
                       </a>
-                      ${post.comments?.text}
+                      ${comment}
                     </small>
                   </div>
                   <span class="post__date-time">30 minutes ago</span>
@@ -133,6 +136,7 @@ const createPost = (post) => {
 };
 
 const showPosts = (posts) => {
+
   const productsContainer = document.getElementById("posts");
   productsContainer.innerHTML = "";
 
@@ -140,6 +144,7 @@ const showPosts = (posts) => {
     const div = createPost(post);
     productsContainer.appendChild(div);
   });
+
 };
 
 const displayLikedPosts = () => {
@@ -158,10 +163,12 @@ const displayReportedPosts = () => {
   });
 };
 
-const loadPosts = async () => {
-  let data = await fetch('../data/posts.json');
-  posts = await data.json();
-  showPosts(posts);
+// const loadPosts = async () => {
+//   let data = await fetch('../data/posts.json');
+//   posts = await data.json();
+const loadPosts = () => {
+  fetch('../data/posts.json')
+    .then(res => res.json())
+    .then(post => showPosts(post))
 }
-
 loadPosts();
