@@ -1,7 +1,10 @@
 let posts = [];
+console.log(posts)
 
 let likedPostsId = [];
+// console.log(likedPostsId)
 let reportedPostsId = [];
+// console.log(reportedPostsId)
 
 const getLikedPosts = () => {
   return posts.filter((post) => likedPostsId.includes(post.id));
@@ -17,7 +20,7 @@ const isLiked = (id) => {
 
 const addToLiked = (id) => {
   likedPostsId.push(id);
-  showPosts('liked');
+  showPosts(id);
 };
 
 const reportPost = (id) => {
@@ -31,13 +34,14 @@ const displayContent = (text) => {
 };
 
 const switchTab = (id) => {
+  console.log(id)
   if (id === "posts") {
     document.getElementById("posts").style.display = "grid";
-    document.getElementById("liked").style.display = "none";
-    document.getElementById("reported").style.display = "block";
+    document.getElementById("liked").style.display = "block";
+    document.getElementById("reported").style.display = "none";
   } else if (id === "liked") {
     document.getElementById("liked").style.display = "block";
-    document.getElementById("posts").style.display = "none";
+    document.getElementById("posts").style.display = "block";
     document.getElementById("reported").style.display = "block";
 
     displayLikedPosts();
@@ -51,9 +55,9 @@ const switchTab = (id) => {
 };
 
 const createPost = (post) => {
-  console.log(post)
+  // console.log(post)
   const description = post.description;
-  const comment = post.comments[0].text;
+  const userComment = post.comments[0].text;
   const userName = post.comments[0].user;
   const userImage = post.userImage;
   const image = post.image;
@@ -101,8 +105,7 @@ const createPost = (post) => {
 
                   <div class="post__indicators"></div>
 
-                  <button class="post__button post__button--align-right" onclick="reportPost(${post.id
-    })">
+                  <button class="post__button post__button--align-right" onclick="reportPost(${post.id})">
                     <i class="fa-solid fa-ban"></i>
                   </button>
                 </div>
@@ -127,7 +130,7 @@ const createPost = (post) => {
                       <a class="post__name--underline" href="#">
                           ${userName}
                       </a>
-                      ${comment}
+                      ${userComment}
                     </small>
                   </div>
                   <span class="post__date-time">30 minutes ago</span>
@@ -152,6 +155,7 @@ const showPosts = (posts) => {
 const displayLikedPosts = () => {
   const likedPosts = getLikedPosts();
   likedPosts.forEach((post) => {
+    console.log(post)
     const div = createPost(post);
     document.getElementById("liked").appendChild(div);
   });
@@ -159,7 +163,7 @@ const displayLikedPosts = () => {
 
 const displayReportedPosts = () => {
   const reportedPosts = getReportedPosts();
-  posts.forEach((post) => {
+  reportPost.forEach((post) => {
     const div = createPost(post);
     document.getElementById("reported").appendChild(div);
   });
